@@ -1,0 +1,16 @@
+{
+  "name": "hc-accounts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:jhollyferr/hc-accounts.git",
+  "author": "Jhollyfer Rodrigues <jhollyferr@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "inquirer": "^9.1.2"
+  }
+}
