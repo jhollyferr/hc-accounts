@@ -5,7 +5,7 @@ import chalk from "chalk";
 // internals
 import fs from "fs";
 
-console.log("initial setup");
+import { createAccount } from "./account.js";
 
 const choices = [
   "Criar conta",
@@ -24,7 +24,7 @@ const question = [
   },
 ];
 
-const operation = async () => {
+export const operation = async () => {
   try {
     const { action } = await inquirer.prompt(question);
 
@@ -32,11 +32,6 @@ const operation = async () => {
   } catch (error) {
     console.error(error);
   }
-};
-
-const createAccount = () => {
-  console.log(chalk.bgGreen.black("Parabéns por escolher o nosso banco!"));
-  console.log(chalk.green("Defina as opções da sua conta a seguir"));
 };
 
 /**
