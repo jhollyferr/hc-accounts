@@ -4,9 +4,16 @@ import fs from "fs";
 
 import { operation } from "./index.js";
 
-const question = {
+const accountPath = "./accounts";
+
+const createAccountInquirer = {
   name: "accountName",
   message: "Digite um nome para a sua conta:",
+};
+
+const depositInquirer = {
+  name: "accountName",
+  message: "Qual o nome da sua conta?",
 };
 
 const balanceJSON = JSON.stringify({
@@ -21,12 +28,11 @@ export const createAccount = () => {
 
 export const buildAccount = async () => {
   try {
-    const { accountName } = await inquirer.prompt([question]);
-    console.info(accountName);
+    const { accountName } = await inquirer.prompt([createAccountInquirer]);
 
-    if (!fs.existsSync("./accounts")) fs.mkdirSync("./accounts");
+    if (!fs.existsSync(accountPath)) fs.mkdirSync(accountPath);
 
-    if (fs.existsSync(`accounts/${accountName}.json`)) {
+    if (fs.existsSync(`${accountPath}/${accountName}.json`)) {
       console.error(chalk.bgRed.black("Account already in use"));
       buildAccount();
       return;
@@ -41,4 +47,30 @@ export const buildAccount = async () => {
   } catch (error) {
     console.error(error);
   }
+};
+
+export const deposit = async () => {
+  try {
+    const { accountName } = await inquirer.prompt([depositInquirer]);
+
+    if (!existAccount(accountName)) {
+      console.log(
+        chalk.bgRed.black("Esta conta não existe, escolha outro nome.")
+      );
+
+      return deposit();
+    }
+
+    
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+/**
+ *
+ * @param {String} accountName
+ */
+const existAccount = (accountName) => {
+  return fs.existsSync(`${accountPath}/${accountName}.json`);
 };
