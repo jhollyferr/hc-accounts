@@ -49,10 +49,15 @@ const defineAction = (action) => {
     case "SACAR":
       return;
     case "SAIR":
-      return;
+      return logout();
     default:
       throw new Error("Option not defined");
   }
+};
+
+const logout = () => {
+  console.log(chalk.bgBlue.black("Obrigado por usar o Accounts!"));
+  process.exit();
 };
 
 operation();
