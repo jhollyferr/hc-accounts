@@ -16,6 +16,11 @@ const depositInquirer = {
   message: "Qual o nome da sua conta?",
 };
 
+const addAmoutInquirer = {
+  name: "amount",
+  message: "Quanto você deseja depositar?",
+};
+
 const balanceJSON = JSON.stringify({
   balance: 0,
 });
@@ -61,10 +66,60 @@ export const deposit = async () => {
       return deposit();
     }
 
-    
+    const { amount } = await inquirer.prompt([addAmoutInquirer]);
+
+    // if(!(amount instanceof Number))
+    //   throw new Error("Amout not instance of number")
+
+    addAmount(accountName, amount);
+
+    operation();
   } catch (error) {
     console.error(error);
   }
+};
+
+/**
+ *
+ * @param {String} accountName
+ * @param {Number} amount
+ */
+const addAmount = (accountName, amount) => {
+  const accountData = getAccount(accountName);
+
+  if (!amount) {
+    console.log(
+      chalk.bgRed.black("Ocorreu um problema, tente novamente mais tarde!")
+    );
+    return deposit();
+  }
+
+  accountData.balance += Number(amount);
+
+  fs.writeFileSync(
+    `${accountPath}/${accountName}.json`,
+    JSON.stringify(accountData),
+    (error) => {
+      throw new Error(error);
+    }
+  );
+
+  console.log(
+    chalk.green(`Foi depositado o valor de R$ ${amount} na sua conta!`)
+  );
+};
+
+/**
+ *
+ * @param {String} accountName
+ */
+const getAccount = (accountName) => {
+  const accountJSON = fs.readFileSync(`${accountPath}/${accountName}.json`, {
+    encoding: "utf-8",
+    flag: "r",
+  });
+
+  return JSON.parse(accountJSON);
 };
 
 /**
