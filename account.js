@@ -16,9 +16,9 @@ const accountInquirer = {
   message: "Qual o nome da sua conta?",
 };
 
-const addAmoutInquirer = {
+const amountInquirer = {
   name: "amount",
-  message: "Quanto você deseja depositar?",
+  message: "Informe valor:",
 };
 
 const balanceJSON = JSON.stringify({
@@ -66,7 +66,7 @@ export const deposit = async () => {
       return deposit();
     }
 
-    const { amount } = await inquirer.prompt([addAmoutInquirer]);
+    const { amount } = await inquirer.prompt([amountInquirer]);
 
     addAmount(accountName, amount);
 
@@ -140,6 +140,18 @@ export const getAccountBalance = async () => {
     );
 
     operation();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const widthdraw = async () => {
+  try {
+    const { accountName } = await inquirer.prompt([accountInquirer]);
+
+    if (!existAccount(accountName)) return widthdraw();
+
+    const { amount } = await inquirer.prompt([amountInquirer]);
   } catch (error) {
     console.error(error);
   }
