@@ -11,7 +11,7 @@ const createAccountInquirer = {
   message: "Digite um nome para a sua conta:",
 };
 
-const depositInquirer = {
+const accountInquirer = {
   name: "accountName",
   message: "Qual o nome da sua conta?",
 };
@@ -56,7 +56,7 @@ export const buildAccount = async () => {
 
 export const deposit = async () => {
   try {
-    const { accountName } = await inquirer.prompt([depositInquirer]);
+    const { accountName } = await inquirer.prompt([accountInquirer]);
 
     if (!existAccount(accountName)) {
       console.log(
@@ -67,9 +67,6 @@ export const deposit = async () => {
     }
 
     const { amount } = await inquirer.prompt([addAmoutInquirer]);
-
-    // if(!(amount instanceof Number))
-    //   throw new Error("Amout not instance of number")
 
     addAmount(accountName, amount);
 
@@ -85,28 +82,32 @@ export const deposit = async () => {
  * @param {Number} amount
  */
 const addAmount = (accountName, amount) => {
-  const accountData = getAccount(accountName);
+  try {
+    const accountData = getAccount(accountName);
 
-  if (!amount) {
-    console.log(
-      chalk.bgRed.black("Ocorreu um problema, tente novamente mais tarde!")
-    );
-    return deposit();
-  }
-
-  accountData.balance += Number(amount);
-
-  fs.writeFileSync(
-    `${accountPath}/${accountName}.json`,
-    JSON.stringify(accountData),
-    (error) => {
-      throw new Error(error);
+    if (!amount) {
+      console.log(
+        chalk.bgRed.black("Ocorreu um problema, tente novamente mais tarde!")
+      );
+      return deposit();
     }
-  );
 
-  console.log(
-    chalk.green(`Foi depositado o valor de R$ ${amount} na sua conta!`)
-  );
+    accountData.balance += Number(amount);
+
+    fs.writeFileSync(
+      `${accountPath}/${accountName}.json`,
+      JSON.stringify(accountData),
+      (error) => {
+        throw new Error(error);
+      }
+    );
+
+    console.log(
+      chalk.green(`Foi depositado o valor de R$ ${amount} na sua conta!`)
+    );
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 /**
@@ -114,12 +115,34 @@ const addAmount = (accountName, amount) => {
  * @param {String} accountName
  */
 const getAccount = (accountName) => {
-  const accountJSON = fs.readFileSync(`${accountPath}/${accountName}.json`, {
-    encoding: "utf-8",
-    flag: "r",
-  });
+  try {
+    const accountJSON = fs.readFileSync(`${accountPath}/${accountName}.json`, {
+      encoding: "utf-8",
+      flag: "r",
+    });
 
-  return JSON.parse(accountJSON);
+    return JSON.parse(accountJSON);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getAccountBalance = async () => {
+  try {
+    const { accountName } = await inquirer.prompt([accountInquirer]);
+
+    if (!existAccount(accountName)) return getAccountBalance();
+
+    const { balance } = getAccount(accountName);
+
+    console.log(
+      chalk.bgBlue.black(`Olá,  o saldo da sua conta é de  R$ ${balance}`)
+    );
+
+    operation();
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 /**
