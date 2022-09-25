@@ -152,6 +152,49 @@ export const widthdraw = async () => {
     if (!existAccount(accountName)) return widthdraw();
 
     const { amount } = await inquirer.prompt([amountInquirer]);
+
+    removeAmount(accountName, amount);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+/**
+ *
+ * @param {String} accountName
+ * @param {Number} amount
+ */
+const removeAmount = (accountName, amount) => {
+  try {
+    const accountData = getAccount(accountName);
+
+    if (!amount) {
+      console.log(
+        chalk.bgRed.black("Ocorreu um erro, tente novamente mais tarde!")
+      );
+      return widthdraw();
+    }
+
+    if (accountData.balance < amount) {
+      console.log(chalk.bgRed.black("Valor indisponível!"));
+      return widthdraw();
+    }
+
+    accountData.balance -= parseFloat(amount);
+
+    fs.writeFileSync(
+      `${accountPath}/${accountName}.json`,
+      JSON.stringify(accountData),
+      (error) => {
+        throw new Error(error);
+      }
+    );
+
+    console.log(
+      chalk.green(`Foi realizado um saque de R$ ${amount} na sua conta!`)
+    );
+
+    operation();
   } catch (error) {
     console.error(error);
   }

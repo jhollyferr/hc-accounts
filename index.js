@@ -5,7 +5,7 @@ import chalk from "chalk";
 // internals
 import fs from "fs";
 
-import { createAccount, deposit, getAccountBalance } from "./account.js";
+import { createAccount, deposit, getAccountBalance, widthdraw } from "./account.js";
 
 const choices = [
   "Criar conta",
@@ -47,7 +47,7 @@ const defineAction = (action) => {
     case "DEPOSITAR":
       return deposit();
     case "SACAR":
-      return;
+      return widthdraw();
     case "SAIR":
       return logout();
     default:
